@@ -16,20 +16,20 @@ import java.util.List;
 
 @Data
 public class Dataset {
-    private final String[] headers;
-    private final String[][] lines;
+    private final @NonNull String[] headers;
+    private final @NonNull String[][] lines;
     
     public static Dataset fromCSVFile(File csvFile) throws IOException {
         try (FileReader reader = new FileReader(csvFile);
              CSVParser csvParser = new CSVParser(reader, CSVFormat.DEFAULT.withHeader())) {
             
-            List<CSVRecord> records = csvParser.getRecords();
+            final List<CSVRecord> records = csvParser.getRecords();
             if (records.isEmpty()) {
                 throw new IllegalArgumentException("CSV file is empty");
             }
             
-            String[] headers = csvParser.getHeaderMap().keySet().toArray(new String[0]);
-            List<String[]> linesList = new ArrayList<>();
+            final String[] headers = csvParser.getHeaderMap().keySet().toArray(new String[0]);
+            final List<String[]> linesList = new ArrayList<>();
             for (CSVRecord record : records) {
                 String[] values = new String[headers.length];
                 for (int i = 0; i < headers.length; i++) {
@@ -38,7 +38,7 @@ public class Dataset {
                 linesList.add(values);
             }
             
-            String[][] lines = linesList.toArray(new String[0][0]);
+            final String[][] lines = linesList.toArray(new String[0][0]);
             return new Dataset(headers, lines);
         }
     }
@@ -47,6 +47,23 @@ public class Dataset {
         assetValid(headers, lines);
         this.headers = headers;
         this.lines = lines;
+    }
+    
+    public int findHeaderIndex(@NonNull String headerName) {
+        int i = 0;
+        while (i++ < headers.length &&
+            !headers[i].equalsIgnoreCase(headerName)) {}
+        return i<headers.length ? i : -1;
+    }
+    
+    public String[] getColumn(@NonNull String headerName) {
+        final int headerIndex = findHeaderIndex(headerName);
+        if (headerIndex < 0) throw new IllegalArgumentException("Invalid header name: " + headerName);
+        final String[] result = new String[lines.length];
+        for (int i=0 ; i<lines.length ; i++) {
+            result[i] = lines[i][headerIndex];
+        }
+        return result;
     }
     
     private void assetValid(@NonNull final String[] headers, @NonNull final String[][] lines) {
