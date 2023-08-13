@@ -15,9 +15,12 @@ public class HistogramTest {
     @Test
     public void testPercentilesHistogram() {
         final double[] input = Arrays.stream(FARE_DATA, 0,FARE_DATA.length).toArray();
-        Histogram histogram = Histogram.percentilesHistogram(input, 100);
+        final Histogram histogram = Histogram.percentilesHistogram(input, 100);
         System.out.println(histogram);
-        int frequenciesSum = (int) Arrays.stream(histogram.getPercentilesData()).collect(Collectors.summarizingDouble(Histogram.PercentileData::frequency)).getSum();
+        final int frequenciesSum =
+            (int) Arrays.stream(histogram.getPercentilesData())
+                .collect(Collectors.summarizingDouble(Histogram.PercentileData::frequency))
+                .getSum();
         assertEquals("frequenciesSum", frequenciesSum, input.length);
     }
 }
