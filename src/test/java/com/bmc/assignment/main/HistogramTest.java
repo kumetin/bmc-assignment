@@ -1,6 +1,6 @@
 package com.bmc.assignment.main;
 
-import com.bmc.assignment.main.utils.Histogram;
+import com.bmc.assignment.main.utils.histogram.Histogram;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;

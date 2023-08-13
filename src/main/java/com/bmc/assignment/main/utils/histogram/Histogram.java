@@ -1,4 +1,4 @@
-package com.bmc.assignment.main.utils;
+package com.bmc.assignment.main.utils.histogram;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

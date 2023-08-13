@@ -1,7 +1,8 @@
 package com.bmc.assignment.main;
 
-import com.bmc.assignment.main.utils.Histogram;
+import com.bmc.assignment.main.utils.histogram.Histogram;
 import com.bmc.assignment.main.utils.dataset.Dataset;
+import com.bmc.assignment.main.utils.histogram.SummarizedHistogram;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.MediaType;
@@ -26,11 +27,12 @@ public class MainHandler {
             final File csvFile = new File(Objects.requireNonNull(classLoader.getResource("titanic.csv")).getFile());
             final Dataset dataset;
             dataset = Dataset.fromCSVFile(csvFile);
-            final double[] input = Arrays.stream(dataset.getColumn("Fair"))
+            final double[] input = Arrays.stream(dataset.getColumn("Fare"))
                 .mapToDouble(Double::valueOf).toArray();
             final Histogram histogram = Histogram.percentilesHistogram(input, 100);
+            final SummarizedHistogram summarizedHistogram = SummarizedHistogram.fromHistogram(histogram);
             return ServerResponse.ok().contentType(MediaType.APPLICATION_JSON)
-                .body(BodyInserters.fromValue(histogram));
+                .body(BodyInserters.fromValue(summarizedHistogram));
         } catch (Exception e) {
             logger.error("failed handling 'titanicFairPricePercentilesHistogram'", e);
             throw new RuntimeException(e);
